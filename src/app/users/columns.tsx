@@ -14,17 +14,17 @@ import { cn } from "@/lib/utils";
 import { ColumnDef } from "@tanstack/react-table";
 import { ArrowUpDown, MoreHorizontal } from "lucide-react";
 import Link from "next/link";
+import Image from "next/image";
 
-export type Payment = {
+export type User = {
   id: string;
-  amount: number;
+  avatar: string;
   fullName: string;
   email: string;
-  userId: string;
-  status: "pending" | "processing" | "success" | "failed";
+  status: "active" | "inactive";
 };
 
-export const columns: ColumnDef<Payment>[] = [
+export const columns: ColumnDef<User>[] = [
   {
     id: "select",
     header: ({ table }) => (
@@ -46,6 +46,16 @@ export const columns: ColumnDef<Payment>[] = [
   {
     accessorKey: "fullName",
     header: "User",
+  },
+  {
+    accessorKey: "avatar",
+    header: "Avatar",
+    cell: ({ row }) => {
+      const user = row.original
+      return <div className={'w-9 h-9 relative'}>
+        <Image src={user.avatar} alt={user.fullName} fill className={'rounded-full object-cover'} />
+      </div>
+    }
   },
   {
     accessorKey: "email",
@@ -71,9 +81,8 @@ export const columns: ColumnDef<Payment>[] = [
         <div
           className={cn(
             `p-1 rounded-md w-max text-xs`,
-            status === "pending" && "bg-yellow-500/40",
-            status === "success" && "bg-green-500/40",
-            status === "failed" && "bg-red-500/40"
+            status === "active" && "bg-green-500/40",
+            status === "inactive" && "bg-red-500/40",
           )}
         >
           {status as string}
@@ -82,22 +91,9 @@ export const columns: ColumnDef<Payment>[] = [
     },
   },
   {
-    accessorKey: "amount",
-    header: () => <div className="text-right">Amount</div>,
-    cell: ({ row }) => {
-      const amount = parseFloat(row.getValue("amount"));
-      const formatted = new Intl.NumberFormat("en-US", {
-        style: "currency",
-        currency: "USD",
-      }).format(amount);
-
-      return <div className="text-right font-medium">{formatted}</div>;
-    },
-  },
-  {
     id: "actions",
     cell: ({ row }) => {
-      const payment = row.original;
+      const user = row.original;
 
       return (
         <DropdownMenu>
@@ -110,15 +106,14 @@ export const columns: ColumnDef<Payment>[] = [
           <DropdownMenuContent align="end">
             <DropdownMenuLabel>Actions</DropdownMenuLabel>
             <DropdownMenuItem
-              onClick={() => navigator.clipboard.writeText(payment.id)}
+              onClick={() => navigator.clipboard.writeText(user.id)}
             >
-              Copy payment ID
+              Copy User ID
             </DropdownMenuItem>
             <DropdownMenuSeparator />
             <DropdownMenuItem>
-              <Link href={`/users/${payment.userId}`}>View customer</Link>
+              <Link href={`/users/${user.id}`}>View customer</Link>
             </DropdownMenuItem>
-            <DropdownMenuItem>View payment details</DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       );
