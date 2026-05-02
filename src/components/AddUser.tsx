@@ -29,35 +29,38 @@ import {
 import { Button } from "./ui/button";
 
 const formSchema = z.object({
-  amount: z
-    .number()
-    .min(1, { message: "Amount must be at least 1!" }),
-  userId: z.string().min(1, {message: 'User Id is required!'}),
-  status: z.enum(['pending', 'processing', 'success', 'failed']),
+  fullName: z
+    .string()
+    .min(2, { message: "fullName must be at least 2 characters!" })
+    .max(50),
+  email: z.string().email({ message: "Invalid email address!" }),
+  phone: z.string().min(10).max(15),
+  address: z.string().min(2),
+  city: z.string().min(2),
 });
 
-const AddOrder = () => {
+const AddUser = () => {
   const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
+    resolver: zodResolver(formSchema)
   });
   return (
     <SheetContent>
       <SheetHeader>
-        <SheetTitle className="mb-4">Add Order</SheetTitle>
+        <SheetTitle className="mb-4">Edit User</SheetTitle>
         <SheetDescription asChild>
           <Form {...form}>
             <form className="space-y-8">
               <FormField
                 control={form.control}
-                name="amount"
+                name="fullName"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Price</FormLabel>
+                    <FormLabel>Username</FormLabel>
                     <FormControl>
                       <Input {...field} />
                     </FormControl>
                     <FormDescription>
-                      Enter the amount of the order
+                      This is your public username.
                     </FormDescription>
                     <FormMessage />
                   </FormItem>
@@ -65,15 +68,15 @@ const AddOrder = () => {
               />
               <FormField
                 control={form.control}
-                name="userId"
+                name="email"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>UserId</FormLabel>
+                    <FormLabel>Email</FormLabel>
                     <FormControl>
                       <Input {...field} />
                     </FormControl>
                     <FormDescription>
-                      Enter the User id
+                      Only admin can see your email.
                     </FormDescription>
                     <FormMessage />
                   </FormItem>
@@ -81,25 +84,47 @@ const AddOrder = () => {
               />
               <FormField
                 control={form.control}
-                name="status"
+                name="phone"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Status</FormLabel>
+                    <FormLabel>Phone</FormLabel>
                     <FormControl>
-                      <Select>
-                        <SelectTrigger>
-                          <SelectValue placeholder={'Select a status'}></SelectValue>
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value={'pending'}>Pending</SelectItem>
-                          <SelectItem value={'processing'}>Processing</SelectItem>
-                          <SelectItem value={'success'}>Success</SelectItem>
-                          <SelectItem value={'failed'}>Failed</SelectItem>
-                        </SelectContent>
-                      </Select>
+                      <Input {...field} />
                     </FormControl>
                     <FormDescription>
-                      Select a status
+                      Only admin can see your phone number.
+                    </FormDescription>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="address"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Address</FormLabel>
+                    <FormControl>
+                      <Input {...field} />
+                    </FormControl>
+                    <FormDescription>
+                      This is the public location.
+                    </FormDescription>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="city"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>City</FormLabel>
+                    <FormControl>
+                      <Input {...field} />
+                    </FormControl>
+                    <FormDescription>
+                      This is the public location.
                     </FormDescription>
                     <FormMessage />
                   </FormItem>
@@ -114,4 +139,4 @@ const AddOrder = () => {
   );
 };
 
-export default AddOrder;
+export default AddUser;
